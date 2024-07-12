@@ -16,7 +16,7 @@ const AppFooter = () => {
       </div>
       <div className="ms-auto">
         <span className="me-1">
-        Design by Nguyen Phuc Khang - {' '}
+        Designed by Nguyen Phuc Khang - {' '}
           <a href="https://aiotlab.vn/" target="_blank" rel="noopener noreferrer">
             AIoT Lab VN
           </a>
