@@ -309,7 +309,7 @@ const CDataTable = (props) => {
   const currentItems = computedPage ? paginatedItems : sortedItems
 
   const tableFilterData = {
-    label: (tableFilter && tableFilter.label) || 'Search for paper:',
+    label: (tableFilter && tableFilter.label) || 'Search for paper',
     placeholder: (tableFilter && tableFilter.placeholder) || 'Input Submisssion ID, Authors or Title',
   }
 
