@@ -7,7 +7,6 @@ import CDataTable from '../views/widgets/@coreui-v3/CDataTables/CDataTable'
 const Abstract = () => {
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-
   const fields = [
     { key: 'Submission ID', label: 'Submission ID' },
     { key: 'Authors', label: 'Authors' },
@@ -66,7 +65,6 @@ const Abstract = () => {
               outlined
               border
               responsive
-              itemsPerPageSelect
               pagination
             />
           )}
