@@ -1,51 +1,200 @@
 import React, { useState, useEffect } from 'react'
-
-import { CCard, CCardBody, CRow, CSpinner } from '@coreui/react'
+import {
+  CButton,
+  CForm,
+  CFormInput,
+  CCardBody,
+  CCol,
+  CRow,
+  CCard,
+  CSpinner,
+  CTable,
+  CTableRow,
+  CTableHeaderCell,
+  CTableDataCell,
+  CTableBody,
+  CPagination,
+  CPaginationItem,
+} from '@coreui/react'
 import axios from 'axios'
 import styles from '../assets/css/styles.module.css'
-import CDataTable from '../views/widgets/@coreui-v3/CDataTables/CDataTable'
 
-const LiveSession = () => {
+const Abstract = () => {
   const [data, setData] = useState([])
+  const [filteredData, setFilteredData] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 5
+  const pageNumbersToShow = 5
+
   const fields = [
-    { key: 'Submission ID', label: 'Submission ID' },
-    { key: 'Authors', label: 'Authors' },
-    { key: 'Title', label: 'Title' },
-    { key: 'Abstract', label: 'Abstract' },
+    { key: '1', label: '1' },
+    { key: '2', label: '2' },
+    { key: '3', label: '3' },
+    { key: '4', label: '4' },
   ]
+
   const GOOGLE_SHEET_PROPS = {
-    spreadsheetId: "1HYVlaBpzW0dSE7eHJhIRr_CxLuG_htfM3yBMCKOJRWc",
-    apiKey: "AIzaSyA58ewEtO-S235_GJRgEwo6k9UN0uY2cL0",
-    sheetName: "Oral arrangement",
-  };
+    spreadsheetId: '',
+    apiKey: 'AIzaSyA58ewEtO-S235_GJRgEwo6k9UN0uY2cL0',
+    sheetName: 'Oral Arrangements',
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEET_PROPS.spreadsheetId}/values/${GOOGLE_SHEET_PROPS.sheetName}?key=${GOOGLE_SHEET_PROPS.apiKey}`,
+        )
+
+        const sheetData = response.data.values
+        const formattedData = sheetData.slice(1).map((row) => {
+          const formattedRow = {}
+          fields.forEach((field, index) => {
+            formattedRow[field.key] = row[index]
+          })
+          return formattedRow
+        })
+
+        setData(formattedData)
+        setFilteredData(formattedData)
+        setIsLoading(false)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+        setIsLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  const handleSearch = () => {
+    if (searchTerm.trim() === '') {
+      setFilteredData(data)
+    } else {
+      const results = data.filter((item) => {
+        if (!isNaN(searchTerm)) {
+          return item['Submission ID'].includes(searchTerm)
+        } else {
+          return (
+            item['Authors'].toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item['Title'].toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item['Abstract'].toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        }
+      })
+      setFilteredData(results)
+    }
+    setCurrentPage(1)
+  }
+
+  const handleInputChange = (e) => {
+    setSearchTerm(e.target.value)
+    if (e.target.value.trim() === '') {
+      setFilteredData(data)
+      setCurrentPage(1)
+    }
+  }
+
+  const indexOfLastItem = currentPage * itemsPerPage
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem)
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber)
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage)
+
+  const getPaginationGroup = () => {
+    let start = Math.floor((currentPage - 1) / pageNumbersToShow) * pageNumbersToShow
+    return new Array(pageNumbersToShow)
+      .fill()
+      .map((_, idx) => start + idx + 1)
+      .filter((page) => page <= totalPages)
+  }
+
+  if (isLoading) {
+    return (
+      <div className={styles.spinner}>
+        <CSpinner color="info" />
+      </div>
+    )
+  }
 
   return (
     <>
       <CRow className={styles.cardbody}>Live Session</CRow>
-      <CCard>
-        <CCardBody>
-          {isLoading ? (
-            <div className="d-flex justify-content-center">
-              <CSpinner color="primary" />
-            </div>
-          ) : (
-            <CDataTable
-              fields={fields}
-              tableFilter
-              hover
-              sorter
-              outlined
-              border
-              responsive
-              itemsPerPageSelect
-              pagination
+      <CForm>
+        <CRow>
+          <CCol>
+            <CFormInput
+              style={{ marginBottom: '15px' }}
+              placeholder="TBA"
+              value={searchTerm}
+              onChange={handleInputChange}
             />
-          )}
-        </CCardBody>
-      </CCard>
+          </CCol>
+          <CCol>
+            <CButton color="info" variant="outline" style={{ marginLeft: '5px' }} onClick={handleSearch}>
+              Search
+            </CButton>
+          </CCol>
+        </CRow>
+      </CForm>
+      <CRow>
+        {filteredData.length > 0 ? (
+          currentItems.map((item, index) => (
+            <CCard key={index} style={{marginBottom: '10px'}} className={'border-info'}>
+              <CCardBody>
+                <CTable responsive>
+                  <CTableBody>
+                    {fields.map((field) => (
+                      <CTableRow key={field.key}>
+                        <CTableHeaderCell scope="row">{field.label}</CTableHeaderCell>
+                        <CTableDataCell>{item[field.key]}</CTableDataCell>
+                      </CTableRow>
+                    ))}
+                  </CTableBody>
+                </CTable>
+              </CCardBody>
+            </CCard>
+          ))
+        ) : (
+          <CCard className={styles.innerCard}>
+            <CCardBody>No results</CCardBody>
+          </CCard>
+        )}
+        {filteredData.length > itemsPerPage && (
+        <CPagination aria-label="Page navigation example" align="center" style={{marginTop: '15px'}}>
+          <CPaginationItem
+            aria-label="Previous"
+            onClick={() => paginate(Math.max(1, currentPage - 1))}
+            disabled={currentPage === 1}
+          >
+            <span aria-hidden="true">&laquo;</span>
+          </CPaginationItem>
+
+          {getPaginationGroup().map((item, index) => (
+            <CPaginationItem
+              key={index}
+              active={currentPage === item}
+              onClick={() => paginate(item)}
+            >
+              {item}
+            </CPaginationItem>
+          ))}
+
+          <CPaginationItem
+            aria-label="Next"
+            onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
+            disabled={currentPage === totalPages}
+          >
+            <span aria-hidden="true">&raquo;</span>
+          </CPaginationItem>
+        </CPagination>
+      )}
+      </CRow>
     </>
   )
 }
 
-export default LiveSession
+export default Abstract
