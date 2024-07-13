@@ -3,10 +3,8 @@ import {
   CButton,
   CForm,
   CFormInput,
-  CCardBody,
-  CCol,
   CRow,
-  CCard,
+  CCol,
   CSpinner,
   CTable,
   CTableRow,
@@ -19,7 +17,7 @@ import {
 import axios from 'axios'
 import styles from '../assets/css/styles.module.css'
 
-const Abstract = () => {
+const DaySession = () => {
   const [data, setData] = useState([])
   const [filteredData, setFilteredData] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -36,9 +34,9 @@ const Abstract = () => {
   ]
 
   const GOOGLE_SHEET_PROPS = {
-    spreadsheetId: '1njDrQL77uCcatspEjHWb0LPft5I--k_x38V3d2AKi7Q',
+    spreadsheetId: '1HYVlaBpzW0dSE7eHJhIRr_CxLuG_htfM3yBMCKOJRWc',
     apiKey: 'AIzaSyA58ewEtO-S235_GJRgEwo6k9UN0uY2cL0',
-    sheetName: 'Submissions',
+    sheetName: 'Oral arrangement',
   }
 
   useEffect(() => {
@@ -69,34 +67,6 @@ const Abstract = () => {
     fetchData()
   }, [])
 
-  const handleSearch = () => {
-    if (searchTerm.trim() === '') {
-      setFilteredData(data)
-    } else {
-      const results = data.filter((item) => {
-        if (!isNaN(searchTerm)) {
-          return item['Submission ID'].includes(searchTerm)
-        } else {
-          return (
-            item['Authors'].toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item['Title'].toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item['Abstract'].toLowerCase().includes(searchTerm.toLowerCase())
-          )
-        }
-      })
-      setFilteredData(results)
-    }
-    setCurrentPage(1)
-  }
-
-  const handleInputChange = (e) => {
-    setSearchTerm(e.target.value)
-    if (e.target.value.trim() === '') {
-      setFilteredData(data)
-      setCurrentPage(1)
-    }
-  }
-
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem)
@@ -117,9 +87,9 @@ const Abstract = () => {
       return text
     }
     const regex = new RegExp(`(${highlight})`, 'gi')
-    return text.split(regex).map((part, index) => 
-      regex.test(part) ? <mark key={index}>{part}</mark> : part
-    )
+    return text
+      .split(regex)
+      .map((part, index) => (regex.test(part) ? <mark key={index}>{part}</mark> : part))
   }
 
   if (isLoading) {
@@ -132,49 +102,44 @@ const Abstract = () => {
 
   return (
     <>
-      <CRow className={styles.cardbody}>Abstract Book</CRow>
       <CForm>
         <CRow>
           <CCol>
             <CFormInput
               style={{ marginBottom: '15px' }}
-              placeholder="Submission ID, Authors or Title"
+              placeholder="Day session"
               value={searchTerm}
-              onChange={handleInputChange}
+            //   onChange={handleInputChange}
             />
           </CCol>
           <CCol>
-            <CButton color="info" variant="outline" style={{ marginLeft: '5px' }} onClick={handleSearch}>
+            <CButton
+              color="info"
+              variant="outline"
+              style={{ marginLeft: '5px' }}
+            //   onClick={handleSearch}
+            >
               Search
             </CButton>
           </CCol>
         </CRow>
       </CForm>
-      <CRow>
-        {filteredData.length > 0 ? (
-          currentItems.map((item, index) => (
-            <CCard key={index} style={{marginBottom: '10px'}} className={'border-info'}>
-              <CCardBody>
-                <CTable responsive>
-                  <CTableBody>
-                    {fields.map((field) => (
-                      <CTableRow key={field.key}>
-                        <CTableHeaderCell scope="row">{field.label}</CTableHeaderCell>
-                        <CTableDataCell>{highlightText(item[field.key], searchTerm)}</CTableDataCell>
-                      </CTableRow>
-                    ))}
-                  </CTableBody>
-                </CTable>
-              </CCardBody>
-            </CCard>
-          ))
-        ) : (
-          <CCard className={styles.innerCard}>
-            <CCardBody>No results</CCardBody>
-          </CCard>
-        )}
-        {filteredData.length > itemsPerPage && (
-        <CPagination aria-label="Page navigation example" align="center" className={styles.pagenum}>
+      <CTable responsive>
+        <CTableBody>
+          {fields.map((field) => (
+            <CTableRow key={field.key}>
+              <CTableHeaderCell scope="row">{field.label}</CTableHeaderCell>
+              {/* <CTableDataCell>{highlightText(item[field.key], searchTerm)}</CTableDataCell> */}
+            </CTableRow>
+          ))}
+        </CTableBody>
+      </CTable>
+      {filteredData.length > itemsPerPage && (
+        <CPagination
+          aria-label="Page navigation example"
+          align="center"
+          className={styles.pagenum}
+        >
           <CPaginationItem
             aria-label="Previous"
             onClick={() => paginate(Math.max(1, currentPage - 1))}
@@ -202,9 +167,8 @@ const Abstract = () => {
           </CPaginationItem>
         </CPagination>
       )}
-      </CRow>
     </>
   )
 }
 
-export default Abstract
+export default DaySession

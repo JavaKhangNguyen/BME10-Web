@@ -68,3 +68,13 @@ body {
   width: 100%;
 }
 
+.tablabel{
+  --cui-nav-underline-border-link-active-color: var(--cui-info)
+}
+
+.pagenum{
+  --cui-pagination-color: var(--cui-info);
+  --cui-pagination-active-bg: var(--cui-info);
+  --cui-pagination-active-border-color: var(--cui-info);
+  margin-top: 15px;
+}
