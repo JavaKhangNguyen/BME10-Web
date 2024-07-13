@@ -112,6 +112,24 @@ const Abstract = () => {
       .filter((page) => page <= totalPages)
   }
 
+  const highlightText = (text, highlight) => {
+    if (!highlight.trim()) {
+      return text
+    }
+    const regex = new RegExp(`(${highlight})`, 'gi')
+    return text.split(regex).map((part, index) => 
+      regex.test(part) ? <mark key={index}>{part}</mark> : part
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <div className={styles.spinner}>
+        <CSpinner color="info" />
+      </div>
+    )
+  }
+
   if (isLoading) {
     return (
       <div className={styles.spinner}>
@@ -150,7 +168,7 @@ const Abstract = () => {
                     {fields.map((field) => (
                       <CTableRow key={field.key}>
                         <CTableHeaderCell scope="row">{field.label}</CTableHeaderCell>
-                        <CTableDataCell>{item[field.key]}</CTableDataCell>
+                        <CTableDataCell>{highlightText(item[field.key], searchTerm)}</CTableDataCell>
                       </CTableRow>
                     ))}
                   </CTableBody>
