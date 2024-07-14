@@ -84,6 +84,7 @@ body {
 .accorditem{
   --cui-accordion-active-color: #ffffff;
   --cui-accordion-active-bg: var(--cui-info);
+  --cui-accordion-btn-focus-box-shadow: 0 0 0 0.25rem #ffffff;
 }
 
 .hreflink{
