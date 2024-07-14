@@ -5,12 +5,11 @@ import {
   CTabContent,
   CTabList,
   CTabPanel,
-  CCard,
-  CCardBody,
   CRow,
   CToast,
   CToastBody,
   CToastHeader,
+  CSpinner
 } from '@coreui/react'
 
 import styles from '../assets/css/styles.module.css'
@@ -18,15 +17,47 @@ import Day1 from './Day1'
 import Day2 from './Day2'
 import Day3 from './Day3'
 
-
 const LiveSession = () => {
   const [errorToast, setErrorToast] = useState(false)
+  const [activeKey, setActiveKey] = useState(1)
+
+  useEffect(() => {
+    const setActiveTab = () => {
+      const currentDate = new Date()
+      const day = currentDate.getDate()
+      const month = currentDate.getMonth() + 1 
+
+      if (month === 7) { // July
+        if (day === 25) { // 25/07
+          setActiveKey(1)
+        } 
+        else if (day === 26) {// 26/07
+          setActiveKey(2)
+        } 
+        else if (day === 27) { // 27/07
+          setActiveKey(3)
+        } 
+        else if (day > 27) { // Beyond 27/07
+          setActiveKey(3) 
+        } 
+        else { // Default 
+          setActiveKey(1) 
+        }
+      } 
+      else if (month > 7 || (month === 7 && day > 27)) {
+        setActiveKey(3) // Beyond 27/7 or not
+      } 
+      else {
+        setActiveKey(1) // Default
+      }
+    }
+    setActiveTab()
+  }, [])
+
   return (
     <>
       <CRow className={styles.cardbody}>Live Session</CRow>
-      <CCard className={'border-info'}>
-        <CCardBody>
-          <CTabs activeItemKey={1}>
+      <CTabs activeItemKey={activeKey}>
             <CTabList variant="underline-border">
               <CTab aria-controls="home-tab-pane" itemKey={1} className={styles.tablabel}>
                 Day 1 - 25/07/2024
@@ -50,8 +81,6 @@ const LiveSession = () => {
               </CTabPanel>
             </CTabContent>
           </CTabs>
-        </CCardBody>
-      </CCard>
       <CToast
         visible={errorToast}
         animation={true}

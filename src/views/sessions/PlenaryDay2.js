@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import {
   CButton,
+  CCard, 
+  CCardBody,
   CForm,
   CFormInput,
   CRow,
@@ -8,6 +10,7 @@ import {
   CSpinner,
   CTable,
   CTableRow,
+  CTableHead,
   CTableHeaderCell,
   CTableDataCell,
   CTableBody,
@@ -27,14 +30,12 @@ const PlenaryDay2 = () => {
   const pageNumbersToShow = 5
 
   const fields = [
-    { key: 'Submission ID', label: 'Submission ID' },
-    { key: 'Authors', label: 'Authors' },
-    { key: 'Title', label: 'Title' },
-    { key: 'Abstract', label: 'Abstract' },
+    { key: 'Time', label: 'Time' },
+    { key: 'Session', label: 'Session' },
   ]
 
   const GOOGLE_SHEET_PROPS = {
-    spreadsheetId: '1HYVlaBpzW0dSE7eHJhIRr_CxLuG_htfM3yBMCKOJRWc',
+    spreadsheetId: '1EXn7R4dhv-qqD0uE9U6rVsL3WinxlV77d-vFUfAzoV8',
     apiKey: 'AIzaSyA58ewEtO-S235_GJRgEwo6k9UN0uY2cL0',
     sheetName: 'Oral arrangement',
   }
@@ -43,20 +44,36 @@ const PlenaryDay2 = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEET_PROPS.spreadsheetId}/values/${GOOGLE_SHEET_PROPS.sheetName}?key=${GOOGLE_SHEET_PROPS.apiKey}`,
+          `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEET_PROPS.spreadsheetId}/values/${GOOGLE_SHEET_PROPS.sheetName}?key=${GOOGLE_SHEET_PROPS.apiKey}`
         )
 
         const sheetData = response.data.values
-        const formattedData = sheetData.slice(1).map((row) => {
-          const formattedRow = {}
-          fields.forEach((field, index) => {
-            formattedRow[field.key] = row[index]
-          })
-          return formattedRow
-        })
+        let startIndex = -1
+        let endIndex = -1
 
-        setData(formattedData)
-        setFilteredData(formattedData)
+        /// Find the start and end indices
+        for (let i = 0; i < sheetData.length; i++) {
+          const rowContent = sheetData[i].join(' ').trim()
+          if (rowContent.includes('PLENARY SESSION II')) {
+            startIndex = i + 1
+          } else if (startIndex !== -1 && rowContent.includes('PARALLEL SESSION III')) {
+            endIndex = i
+            break
+          }
+        }
+
+        if (startIndex !== -1 && endIndex !== -1) {
+          const relevantData = sheetData.slice(startIndex, endIndex)
+          const formattedData = relevantData.map((row) => ({
+            Time: row[0] || '',
+            Session: row.slice(1).join(' ').trim() || '',
+          }))
+
+          setData(formattedData)
+          setFilteredData(formattedData)
+        }
+
+        console.log(sheetData)
         setIsLoading(false)
       } catch (error) {
         console.error('Error fetching data:', error)
@@ -66,6 +83,26 @@ const PlenaryDay2 = () => {
 
     fetchData()
   }, [])
+
+  const handleInputChange = (e) => {
+    setSearchTerm(e.target.value)
+    if (e.target.value.trim() === '') {
+      setFilteredData(data)
+      setCurrentPage(1)
+    }
+  }
+
+  const handleSearch = () => {
+    if (searchTerm.trim() === '') {
+      setFilteredData(data)
+    } else {
+      const filtered = data.filter((item) =>
+        item.Session.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+      setFilteredData(filtered)
+    }
+    setCurrentPage(1)
+  }
 
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
@@ -100,6 +137,8 @@ const PlenaryDay2 = () => {
     )
   }
 
+  
+
   return (
     <>
       <CForm>
@@ -107,33 +146,46 @@ const PlenaryDay2 = () => {
           <CCol>
             <CFormInput
               style={{ marginBottom: '15px' }}
-              placeholder="Plenary session"
+              placeholder="Search session"
               value={searchTerm}
-            //   onChange={handleInputChange}
+              onChange={handleInputChange}
             />
           </CCol>
           <CCol>
-            <CButton
-              color="info"
-              variant="outline"
-              style={{ marginLeft: '5px' }}
-            //   onClick={handleSearch}
-            >
+            <CButton color="info" variant="outline" style={{ marginLeft: '5px' }} onClick={handleSearch}>
               Search
             </CButton>
           </CCol>
         </CRow>
       </CForm>
-      <CTable responsive>
-        <CTableBody>
-          {fields.map((field) => (
-            <CTableRow key={field.key}>
-              <CTableHeaderCell scope="row">{field.label}</CTableHeaderCell>
-              {/* <CTableDataCell>{highlightText(item[field.key], searchTerm)}</CTableDataCell> */}
+      {filteredData.length > 0 ? (
+        <CTable responsive>
+          <CTableHead>
+            <CTableRow>
+              {fields.map((field) => (
+                <CTableHeaderCell key={field.key}>{field.label}</CTableHeaderCell>
+              ))}
             </CTableRow>
-          ))}
-        </CTableBody>
-      </CTable>
+          </CTableHead>
+          <CTableBody>
+            {currentItems.map((item, index) => (
+              <CTableRow key={index}>
+                {fields.map((field) => (
+                  <CTableDataCell key={field.key}>
+                    {field.key === 'Session'
+                      ? highlightText(item[field.key], searchTerm)
+                      : item[field.key]}
+                  </CTableDataCell>
+                ))}
+              </CTableRow>
+            ))}
+          </CTableBody>
+        </CTable>
+      ) : (
+        <CCard className={styles.cardbody}>
+          <CCardBody>No results</CCardBody>
+        </CCard>
+      )}
       {filteredData.length > itemsPerPage && (
         <CPagination
           aria-label="Page navigation example"
