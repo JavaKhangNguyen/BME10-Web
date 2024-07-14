@@ -14,7 +14,7 @@ import PlenaryDay3 from './sessions/PlenaryDay3'
 
 const Day3 = () => {
   return (
-    <CCard>
+    <CCard className={'border-info'}>
       <CCardBody>
         <CAccordion>
           <CAccordionItem itemKey={1} className={styles.accorditem}>
