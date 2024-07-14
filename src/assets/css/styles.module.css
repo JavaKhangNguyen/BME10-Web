@@ -69,7 +69,8 @@ body {
 }
 
 .tablabel{
-  --cui-nav-underline-border-link-active-color: var(--cui-info)
+  --cui-nav-underline-border-link-active-color: var(--cui-info);
+  --cui-nav-link-hover-color:  var(--cui-info)
 }
 
 .pagenum{
@@ -77,4 +78,9 @@ body {
   --cui-pagination-active-bg: var(--cui-info);
   --cui-pagination-active-border-color: var(--cui-info);
   margin-top: 15px;
+}
+
+.accorditem{
+  --cui-accordion-active-color: #ffffff;
+  --cui-accordion-active-bg: var(--cui-info);
 }

@@ -14,8 +14,10 @@ import {
 } from '@coreui/react'
 
 import styles from '../assets/css/styles.module.css'
-import DaySession from './DaySession'
-import SessionSchedule from './SessionSchedule'
+import Day1 from './Day1'
+import Day2 from './Day2'
+import Day3 from './Day3'
+
 
 const LiveSession = () => {
   const [errorToast, setErrorToast] = useState(false)
@@ -27,18 +29,24 @@ const LiveSession = () => {
           <CTabs activeItemKey={1}>
             <CTabList variant="underline-border">
               <CTab aria-controls="home-tab-pane" itemKey={1} className={styles.tablabel}>
-                Session
+                Day 1 - 25/07/2024
               </CTab>
               <CTab aria-controls="profile-tab-pane" itemKey={2} className={styles.tablabel}>
-                Day
+                Day 2 - 26/07/2024
+              </CTab>
+              <CTab aria-controls="profile-tab-pane" itemKey={3} className={styles.tablabel}>
+                Day 3 - 27/07/2024
               </CTab>
             </CTabList>
             <CTabContent>
               <CTabPanel className="py-3" aria-labelledby="home-tab-pane" itemKey={1}>
-                <SessionSchedule />
+                <Day1 />
               </CTabPanel>
               <CTabPanel className="py-3" aria-labelledby="profile-tab-pane" itemKey={2}>
-                <DaySession />
+                <Day2 />
+              </CTabPanel>
+              <CTabPanel className="py-3" aria-labelledby="profile-tab-pane" itemKey={3}>
+                <Day3 />
               </CTabPanel>
             </CTabContent>
           </CTabs>
