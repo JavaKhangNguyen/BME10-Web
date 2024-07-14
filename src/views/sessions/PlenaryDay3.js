@@ -81,10 +81,9 @@ const PlenaryDay3 = () => {
           setFilteredData(formattedData)
         }
 
-        
-        console.log(sheetData)
         setIsLoading(false)
-      } catch (error) {
+      } 
+      catch (error) {
         console.error('Error fetching data:', error)
         setIsLoading(false)
       }
@@ -145,8 +144,6 @@ const PlenaryDay3 = () => {
       </div>
     )
   }
-
-  
 
   return (
     <>

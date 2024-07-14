@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import {
-  CAccordion, 
-  CAccordionBody, 
-  CAccordionHeader, 
-  CAccordionItem,
   CButton,
   CForm,
   CFormInput,
@@ -31,14 +27,15 @@ const ParallelDay2 = () => {
   const pageNumbersToShow = 5
 
   const fields = [
-    { key: 'Submission ID', label: 'Submission ID' },
-    { key: 'Authors', label: 'Authors' },
-    { key: 'Title', label: 'Title' },
-    { key: 'Abstract', label: 'Abstract' },
+    { key: 'Time', label: 'Time' },
+    { key: 'Session Name', label: 'Session Name' },
+    { key: 'Room', label: 'Room' },
+    { key: 'Session Chair', label: 'Session Chair' },
+    { key: 'Topic', label: 'Topic' },
   ]
 
   const GOOGLE_SHEET_PROPS = {
-    spreadsheetId: '1HYVlaBpzW0dSE7eHJhIRr_CxLuG_htfM3yBMCKOJRWc',
+    spreadsheetId: '1EXn7R4dhv-qqD0uE9U6rVsL3WinxlV77d-vFUfAzoV8',
     apiKey: 'AIzaSyA58ewEtO-S235_GJRgEwo6k9UN0uY2cL0',
     sheetName: 'Oral arrangement',
   }
@@ -70,6 +67,14 @@ const ParallelDay2 = () => {
 
     fetchData()
   }, [])
+
+  const handleInputChange = (e) => {
+    setSearchTerm(e.target.value)
+    if (e.target.value.trim() === '') {
+      setFilteredData(data)
+      setCurrentPage(1)
+    }
+  }
 
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage

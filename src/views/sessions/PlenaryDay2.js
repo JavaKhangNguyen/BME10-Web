@@ -49,32 +49,51 @@ const PlenaryDay2 = () => {
 
         const sheetData = response.data.values
         let startIndex = -1
-        let endIndex = -1
+        let endIndex1 = -1
+        let endIndex2 = -1
 
-        /// Find the start and end indices
-        for (let i = 0; i < sheetData.length; i++) {
-          const rowContent = sheetData[i].join(' ').trim()
-          if (rowContent.includes('PLENARY SESSION II')) {
-            startIndex = i + 1
-          } else if (startIndex !== -1 && rowContent.includes('PARALLEL SESSION III')) {
-            endIndex = i
-            break
-          }
+        // Find the start and end indices
+       for (let i = 0; i < sheetData.length; i++) {
+        const rowContent = sheetData[i].join(' ').trim()
+        if (rowContent.includes('PLENARY SESSION II')) {
+          startIndex = i + 1
+        } else if (startIndex !== -1 && endIndex1 === -1 && rowContent.includes('PARALLEL SESSION III')) {
+          endIndex1 = i
+        } else if (endIndex1 !== -1 && rowContent.includes('Day 3: Saturday, 27 July, 2024')) {
+          endIndex2 = i
+          break
         }
+      }
 
-        if (startIndex !== -1 && endIndex !== -1) {
-          const relevantData = sheetData.slice(startIndex, endIndex)
-          const formattedData = relevantData.map((row) => ({
+      const formattedData = []
+
+      // First search
+      if (startIndex !== -1 && endIndex1 !== -1) {
+        const relevantData1 = sheetData.slice(startIndex, endIndex1)
+        relevantData1.forEach((row) => {
+          formattedData.push({
             Time: row[0] || '',
             Session: row.slice(1).join(' ').trim() || '',
-          }))
+          })
+        })
+      }
 
-          setData(formattedData)
-          setFilteredData(formattedData)
-        }
+      // Second search
+      if (endIndex1 !== -1 && endIndex2 !== -1) {
+        const relevantData2 = sheetData.slice(endIndex1, endIndex2)
+        relevantData2.forEach((row) => {
+          if (['COFFEE BREAK - POSTER VIEWING', 'Poster presentation Session II', 'PARALLEL SESSION III'].some(text => row.join(' ').includes(text))) {
+            formattedData.push({
+              Time: row[0] || '',
+              Session: row.slice(1).join(' ').trim() || '',
+            })
+          }
+        })
+      }
 
-        console.log(sheetData)
-        setIsLoading(false)
+      setData(formattedData)
+      setFilteredData(formattedData)
+      setIsLoading(false)
       } catch (error) {
         console.error('Error fetching data:', error)
         setIsLoading(false)
@@ -136,8 +155,6 @@ const PlenaryDay2 = () => {
       </div>
     )
   }
-
-  
 
   return (
     <>

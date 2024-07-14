@@ -169,7 +169,7 @@ const Abstract = () => {
             </CCard>
           ))
         ) : (
-          <CCard className={styles.innerCard}>
+          <CCard className={styles.cardbody}>
             <CCardBody>No results</CCardBody>
           </CCard>
         )}

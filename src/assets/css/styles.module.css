@@ -1,5 +1,6 @@
 body {
   background-color: #ffffff;
+  
 }
 .sidenav{
   --cui-sidebar-bg: #ffffff;
@@ -83,4 +84,8 @@ body {
 .accorditem{
   --cui-accordion-active-color: #ffffff;
   --cui-accordion-active-bg: var(--cui-info);
+}
+
+.hreflink{
+  color: var(--cui-info);
 }

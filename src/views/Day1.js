@@ -18,7 +18,7 @@ const Day1 = () => {
       <CCardBody>
         <CAccordion>
           <CAccordionItem itemKey={1} className={styles.accorditem}>
-            <CAccordionHeader>Plenary Session I</CAccordionHeader>
+            <CAccordionHeader>General Schdule</CAccordionHeader>
             <CAccordionBody>
               <PlenaryDay1 />
             </CAccordionBody>
