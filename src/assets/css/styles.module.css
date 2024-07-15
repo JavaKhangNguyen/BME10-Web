@@ -3,7 +3,6 @@ body {
   
 }
 .sidenav{
-  --cui-sidebar-bg: #ffffff;
   --cui-tertiary-bg: linear-gradient(156deg,#06d3d5 30%,#2a81cb 80%);
   --cui-sidebar-nav-link-hover-color: #ffffff;
   --cui-emphasis-color: #ffffff;
