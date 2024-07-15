@@ -27,6 +27,7 @@ const PlenaryDay1 = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
+  const [currentTime, setCurrentTime] = useState(new Date())
   const itemsPerPage = 5
   const pageNumbersToShow = 5
 
@@ -182,6 +183,26 @@ const PlenaryDay1 = () => {
     return google(event)
   }
 
+  const isSessionOngoing = (date, time) => {
+    const [startTime, endTime] = time.split(' – ')
+    const [startHours, startMinutes] = startTime.split(':')
+    const [endHours, endMinutes] = endTime ? endTime.split(':') : [parseInt(startHours) + 1, startMinutes]
+    
+    const startDateTime = new Date(`${date}T${startHours}:${startMinutes}:00+07:00`)
+    const endDateTime = new Date(`${date}T${endHours}:${endMinutes}:00+07:00`)
+
+    return currentTime >= startDateTime && currentTime <= endDateTime
+  }
+
+  // Update current time every minute
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 60000)
+
+    return () => clearInterval(timer)
+  }, [])
+  
   if (isLoading) {
     return (
       <div className={styles.spinner}>
@@ -225,7 +246,7 @@ const PlenaryDay1 = () => {
           </CTableHead>
           <CTableBody>
             {currentItems.map((item, index) => (
-              <CTableRow key={index}>
+              <CTableRow key={index} color={isSessionOngoing(item.Date, item.Time) ? 'success' : undefined}>
                 {fields.map((field) => (
                   <CTableDataCell key={field.key}>
                     {field.key === 'Session' ? (

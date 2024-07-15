@@ -3,7 +3,7 @@ import React from 'react'
 const Abstract = React.lazy(() => import('./views/Abstract'))
 const LiveSession = React.lazy(() => import('./views/LiveSession'))
 const SessionFeedback = React.lazy(() => import('./views/SessionFeedback'))
-const Photos = React.lazy(() => import('./views/Photos.js'))
+const Photos = React.lazy(() => import('./views/Photos'))
 
 const routes = [
   { path: '/', name: 'Abstract Book', element: Abstract },

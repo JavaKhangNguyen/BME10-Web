@@ -24,6 +24,7 @@ const ParallelDay2 = () => {
   const [filteredData, setFilteredData] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const [currentTime, setCurrentTime] = useState(new Date())
 
   const GOOGLE_SHEET_PROPS = {
     spreadsheetId: '1EXn7R4dhv-qqD0uE9U6rVsL3WinxlV77d-vFUfAzoV8',
@@ -163,6 +164,26 @@ const ParallelDay2 = () => {
     return google(event)
   }
 
+  const isSessionOngoing = (date, time) => {
+    const [startTime, endTime] = time.split(' – ')
+    const [startHours, startMinutes] = startTime.split(':')
+    const [endHours, endMinutes] = endTime ? endTime.split(':') : [parseInt(startHours) + 1, startMinutes]
+    
+    const startDateTime = new Date(`${date}T${startHours}:${startMinutes}:00+07:00`)
+    const endDateTime = new Date(`${date}T${endHours}:${endMinutes}:00+07:00`)
+
+    return currentTime >= startDateTime && currentTime <= endDateTime
+  }
+
+  // Update current time every minute
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 60000)
+
+    return () => clearInterval(timer)
+  }, [])
+
   if (isLoading) {
     return (
       <div className={styles.spinner}>
@@ -216,7 +237,7 @@ const ParallelDay2 = () => {
                 </CTableHead>
                 <CTableBody>
                   {column.topics[chairIndex].map((item, itemIndex) => (
-                    <CTableRow key={itemIndex}>
+                    <CTableRow key={itemIndex} color={isSessionOngoing(item.date, item.time) ? 'success' : undefined}>
                       <CTableHeaderCell style={{fontWeight: 'bold'}}>{item.time}</CTableHeaderCell>
                       <CTableDataCell>{highlightText(item.topic, searchTerm)}</CTableDataCell>
                       <CTableDataCell>
