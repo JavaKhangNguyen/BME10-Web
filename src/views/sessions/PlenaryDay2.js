@@ -19,6 +19,8 @@ import {
 } from '@coreui/react'
 import axios from 'axios'
 import styles from '../../assets/css/styles.module.css'
+import { google } from 'calendar-link'
+
 
 const PlenaryDay2 = () => {
   const [data, setData] = useState([])
@@ -32,6 +34,7 @@ const PlenaryDay2 = () => {
   const fields = [
     { key: 'Time', label: 'Time' },
     { key: 'Session', label: 'Session' },
+    { key: 'Action', label: '' }
   ]
 
   const GOOGLE_SHEET_PROPS = {
@@ -74,6 +77,7 @@ const PlenaryDay2 = () => {
           formattedData.push({
             Time: row[0] || '',
             Session: row.slice(1).join(' ').trim() || '',
+            Date: '2024-07-26',
           })
         })
       }
@@ -86,6 +90,7 @@ const PlenaryDay2 = () => {
             formattedData.push({
               Time: row[0] || '',
               Session: row.slice(1).join(' ').trim() || '',
+              Date: '2024-07-26',
             })
           }
         })
@@ -148,6 +153,21 @@ const PlenaryDay2 = () => {
       .map((part, index) => (regex.test(part) ? <mark key={index}>{part}</mark> : part))
   }
 
+  const createGoogleCalendarLink = (date, time, session) => {
+    const [startTime] = time.split(' – ')
+    const [startHours, startMinutes] = startTime.split(':')
+    const startDateTime = `${date} ${startHours}:${startMinutes}:00 +0700`
+
+    const event = {
+      title: session,
+      description: session,
+      start: startDateTime,
+      duration: [35, "minutes"],
+    }
+
+    return google(event)
+  }
+
   if (isLoading) {
     return (
       <div className={styles.spinner}>
@@ -191,7 +211,22 @@ const PlenaryDay2 = () => {
                   <CTableDataCell key={field.key}>
                     {field.key === 'Session'
                       ? highlightText(item[field.key], searchTerm)
-                      : item[field.key]}
+                      : field.key === 'Action' ? (
+                        <CButton
+                          color="info"
+                          variant='outline'
+                          onClick={() =>
+                            window.open(
+                              createGoogleCalendarLink(item.Date, item.Time, item.Session),
+                              '_blank',
+                            )
+                          }
+                        >
+                          Set Reminder
+                        </CButton>
+                      ) : (
+                        item[field.key]
+                      )}
                   </CTableDataCell>
                 ))}
               </CTableRow>

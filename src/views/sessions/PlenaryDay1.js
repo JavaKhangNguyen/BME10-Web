@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import {
   CButton,
-  CCard, 
+  CCard,
   CCardBody,
   CForm,
   CFormInput,
@@ -19,6 +19,7 @@ import {
 } from '@coreui/react'
 import axios from 'axios'
 import styles from '../../assets/css/styles.module.css'
+import { google } from 'calendar-link'
 
 const PlenaryDay1 = () => {
   const [data, setData] = useState([])
@@ -32,6 +33,7 @@ const PlenaryDay1 = () => {
   const fields = [
     { key: 'Time', label: 'Time' },
     { key: 'Session', label: 'Session' },
+    { key: 'Action', label: '' }
   ]
 
   const GOOGLE_SHEET_PROPS = {
@@ -44,56 +46,70 @@ const PlenaryDay1 = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEET_PROPS.spreadsheetId}/values/${GOOGLE_SHEET_PROPS.sheetName}?key=${GOOGLE_SHEET_PROPS.apiKey}`
+          `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEET_PROPS.spreadsheetId}/values/${GOOGLE_SHEET_PROPS.sheetName}?key=${GOOGLE_SHEET_PROPS.apiKey}`,
         )
 
         const sheetData = response.data.values
         let startIndex = -1
         let endIndex1 = -1
         let endIndex2 = -1
+        let eventDate = null
 
-       // Find the start and end indices
-       for (let i = 0; i < sheetData.length; i++) {
-        const rowContent = sheetData[i].join(' ').trim()
-        if (rowContent.includes('PLENARY SESSION I')) {
-          startIndex = i + 1
-        } else if (startIndex !== -1 && endIndex1 === -1 && rowContent.includes('PARALLEL SESSION I')) {
-          endIndex1 = i
-        } else if (endIndex1 !== -1 && rowContent.includes('Day 2: Friday, 26 July, 2024')) {
-          endIndex2 = i
-          break
+        // Find the start and end indices
+        for (let i = 0; i < sheetData.length; i++) {
+          const rowContent = sheetData[i].join(' ').trim()
+          if (rowContent.includes('PLENARY SESSION I')) {
+            startIndex = i + 1
+          } else if (
+            startIndex !== -1 &&
+            endIndex1 === -1 &&
+            rowContent.includes('PARALLEL SESSION I')
+          ) {
+            endIndex1 = i
+          } else if (endIndex1 !== -1 && rowContent.includes('Day 2: Friday, 26 July, 2024')) {
+            endIndex2 = i
+            break
+          }
+          if (rowContent.includes('Day 1: Thursday, 25 July, 2024')) {
+            eventDate = '2024-07-25'
+          }
         }
-      }
 
-      const formattedData = []
+        const formattedData = []
 
-      // First search
-      if (startIndex !== -1 && endIndex1 !== -1) {
-        const relevantData1 = sheetData.slice(startIndex, endIndex1)
-        relevantData1.forEach((row) => {
-          formattedData.push({
-            Time: row[0] || '',
-            Session: row.slice(1).join(' ').trim() || '',
-          })
-        })
-      }
-
-      // Second search
-      if (endIndex1 !== -1 && endIndex2 !== -1) {
-        const relevantData2 = sheetData.slice(endIndex1, endIndex2)
-        relevantData2.forEach((row) => {
-          if (['COFFEE BREAK - POSTER VIEWING', 'GALA DINNER', 'PARALLEL SESSION I'].some(text => row.join(' ').includes(text))) {
+        // First search
+        if (startIndex !== -1 && endIndex1 !== -1) {
+          const relevantData1 = sheetData.slice(startIndex, endIndex1)
+          relevantData1.forEach((row) => {
             formattedData.push({
               Time: row[0] || '',
               Session: row.slice(1).join(' ').trim() || '',
+              Date: eventDate || '',
             })
-          }
-        })
-      }
+          })
+        }
 
-      setData(formattedData)
-      setFilteredData(formattedData)
-      setIsLoading(false)
+        // Second search
+        if (endIndex1 !== -1 && endIndex2 !== -1) {
+          const relevantData2 = sheetData.slice(endIndex1, endIndex2)
+          relevantData2.forEach((row) => {
+            if (
+              ['COFFEE BREAK - POSTER VIEWING', 'GALA DINNER', 'PARALLEL SESSION I'].some((text) =>
+                row.join(' ').includes(text),
+              )
+            ) {
+              formattedData.push({
+                Time: row[0] || '',
+                Session: row.slice(1).join(' ').trim() || '',
+                Date: eventDate || '',
+              })
+            }
+          })
+        }
+
+        setData(formattedData)
+        setFilteredData(formattedData)
+        setIsLoading(false)
       } catch (error) {
         console.error('Error fetching data:', error)
         setIsLoading(false)
@@ -116,7 +132,7 @@ const PlenaryDay1 = () => {
       setFilteredData(data)
     } else {
       const filtered = data.filter((item) =>
-        item.Session.toLowerCase().includes(searchTerm.toLowerCase())
+        item.Session.toLowerCase().includes(searchTerm.toLowerCase()),
       )
       setFilteredData(filtered)
     }
@@ -148,6 +164,21 @@ const PlenaryDay1 = () => {
       .map((part, index) => (regex.test(part) ? <mark key={index}>{part}</mark> : part))
   }
 
+  const createGoogleCalendarLink = (date, time, session) => {
+    const [startTime] = time.split(' – ')
+    const [startHours, startMinutes] = startTime.split(':')
+    const startDateTime = `${date} ${startHours}:${startMinutes}:00 +0700`
+
+    const event = {
+      title: session,
+      description: session,
+      start: startDateTime,
+      duration: [35, "minutes"],
+    }
+
+    return google(event)
+  }
+
   if (isLoading) {
     return (
       <div className={styles.spinner}>
@@ -169,7 +200,12 @@ const PlenaryDay1 = () => {
             />
           </CCol>
           <CCol>
-            <CButton color="info" variant="outline" style={{ marginLeft: '5px' }} onClick={handleSearch}>
+            <CButton
+              color="info"
+              variant="outline"
+              style={{ marginLeft: '5px' }}
+              onClick={handleSearch}
+            >
               Search
             </CButton>
           </CCol>
@@ -189,9 +225,24 @@ const PlenaryDay1 = () => {
               <CTableRow key={index}>
                 {fields.map((field) => (
                   <CTableDataCell key={field.key}>
-                    {field.key === 'Session'
-                      ? highlightText(item[field.key], searchTerm)
-                      : item[field.key]}
+                    {field.key === 'Session' ? (
+                      highlightText(item[field.key], searchTerm)
+                    ) : field.key === 'Action' ? (
+                      <CButton
+                        color="info"
+                        variant='outline'
+                        onClick={() =>
+                          window.open(
+                            createGoogleCalendarLink(item.Date, item.Time, item.Session),
+                            '_blank',
+                          )
+                        }
+                      >
+                        Set Reminder
+                      </CButton>
+                    ) : (
+                      item[field.key]
+                    )}
                   </CTableDataCell>
                 ))}
               </CTableRow>
@@ -204,11 +255,7 @@ const PlenaryDay1 = () => {
         </CCard>
       )}
       {filteredData.length > itemsPerPage && (
-        <CPagination
-          aria-label="Page navigation example"
-          align="center"
-          className={styles.pagenum}
-        >
+        <CPagination aria-label="Page navigation example" align="center" className={styles.pagenum}>
           <CPaginationItem
             aria-label="Previous"
             onClick={() => paginate(Math.max(1, currentPage - 1))}
