@@ -25,9 +25,9 @@ const AppHeader = () => {
       <CContainer fluid>
         <CHeaderToggler
           onClick={() => dispatch({ type: 'set', sidebarShow: !sidebarShow })}
-          style={{ marginInlineStart: '-14px' }}
+          style={{ position: 'fixed', top: 0, marginInlineStart: '-20px' }}
         >
-          <CIcon icon={cilMenu} size="lg" />
+          <CIcon icon={cilMenu} size="3xl" />
         </CHeaderToggler>
         <CImage src={banner} className={styles.banner}/>
       </CContainer>
