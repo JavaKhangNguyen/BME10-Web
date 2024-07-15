@@ -1,7 +1,7 @@
 body {
   background-color: #ffffff;
-  
 }
+
 .sidenav{
   --cui-tertiary-bg: linear-gradient(156deg,#06d3d5 30%,#2a81cb 80%);
   --cui-sidebar-nav-link-hover-color: #ffffff;
