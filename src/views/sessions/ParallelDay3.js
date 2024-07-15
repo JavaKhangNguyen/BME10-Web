@@ -56,7 +56,7 @@ const ParallelDay3 = () => {
         const sheetData = response.data.values
         let startIndex = -1
         let endIndex = -1
-        const eventDate = '2024-07-25' 
+        const eventDate = '2024-07-26' 
 
         for (let i = 0; i < sheetData.length; i++) {
           const rowContent = sheetData[i].join(' ').trim();

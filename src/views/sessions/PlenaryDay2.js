@@ -154,15 +154,18 @@ const PlenaryDay2 = () => {
   }
 
   const createGoogleCalendarLink = (date, time, session) => {
-    const [startTime] = time.split(' – ')
+    const [startTime, endTime] = time.split(' – ')
     const [startHours, startMinutes] = startTime.split(':')
-    const startDateTime = `${date} ${startHours}:${startMinutes}:00 +0700`
+    const [endHours, endMinutes] = endTime ? endTime.split(':') : [parseInt(startHours) + 1, startMinutes]
+    
+    const startDateTime = new Date(`${date}T${startHours}:${startMinutes}:00+07:00`)
+    const endDateTime = new Date(`${date}T${endHours}:${endMinutes}:00+07:00`)
 
     const event = {
       title: session,
       description: session,
-      start: startDateTime,
-      duration: [35, "minutes"],
+      start: startDateTime.toISOString(),
+      end: endDateTime.toISOString(),
     }
 
     return google(event)
