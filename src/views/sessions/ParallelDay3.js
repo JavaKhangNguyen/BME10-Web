@@ -19,7 +19,7 @@ import axios from 'axios'
 import { google } from 'calendar-link'
 import styles from '../../assets/css/styles.module.css'
 
-const ParallelDay1 = () => {
+const ParallelDay3 = () => {
   const [data, setData] = useState([])
   const [filteredData, setFilteredData] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
@@ -56,11 +56,11 @@ const ParallelDay1 = () => {
         const sheetData = response.data.values
         let startIndex = -1
         let endIndex = -1
-        const eventDate = '2024-07-25' // Static date as requested
+        const eventDate = '2024-07-25' 
 
         for (let i = 0; i < sheetData.length; i++) {
           const rowContent = sheetData[i].join(' ').trim();
-          if (rowContent.includes('SESSION NAME') && rowContent.includes('Medical Instrumentations')) {
+          if (rowContent.includes('SESSION NAME') && rowContent.includes('Imaging and Modeling in Biomechanics')) {
             startIndex = i;
           } else if (startIndex !== -1 && rowContent.includes('COFFEE BREAK')) {
             endIndex = i;
@@ -246,4 +246,4 @@ const ParallelDay1 = () => {
   )
 }
 
-export default ParallelDay1
+export default ParallelDay3

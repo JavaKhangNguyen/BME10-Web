@@ -16,7 +16,7 @@ const Day3 = () => {
     <CCard className={'border-info'}>
       <CCardBody>
         <CAccordion alwaysOpen activeItemKey={1}>
-          <CAccordionItem  itemKey={1} className={styles.accorditem}>
+          <CAccordionItem itemKey={1} className={styles.accorditem}>
             <CAccordionHeader>General Schedule</CAccordionHeader>
             <CAccordionBody>
               <PlenaryDay3 />

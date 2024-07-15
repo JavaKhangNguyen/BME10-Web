@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import {
   CButton,
+  CCard, 
+  CCardBody,
   CForm,
   CFormInput,
   CRow,
@@ -8,36 +10,40 @@ import {
   CSpinner,
   CTable,
   CTableRow,
+  CTableHead,
   CTableHeaderCell,
   CTableDataCell,
   CTableBody,
-  CPagination,
-  CPaginationItem,
 } from '@coreui/react'
 import axios from 'axios'
+import { google } from 'calendar-link'
 import styles from '../../assets/css/styles.module.css'
 
 const ParallelDay2 = () => {
   const [data, setData] = useState([])
   const [filteredData, setFilteredData] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 5
-  const pageNumbersToShow = 5
-
-  const fields = [
-    { key: 'Time', label: 'Time' },
-    { key: 'Session Name', label: 'Session Name' },
-    { key: 'Room', label: 'Room' },
-    { key: 'Session Chair', label: 'Session Chair' },
-    { key: 'Topic', label: 'Topic' },
-  ]
+  const [isLoading, setIsLoading] = useState(true)
 
   const GOOGLE_SHEET_PROPS = {
     spreadsheetId: '1EXn7R4dhv-qqD0uE9U6rVsL3WinxlV77d-vFUfAzoV8',
     apiKey: 'AIzaSyA58ewEtO-S235_GJRgEwo6k9UN0uY2cL0',
     sheetName: 'Oral arrangement',
+  }
+
+  const processTopicString = (topic) => {
+    if (topic.startsWith('# Invited Speaker')) {
+      const match = topic.match(/# Invited Speaker (.+?) \((.+?)\) (.+)/)
+      if (match) {
+        return `(${match[2]}) - ${match[3]} - ${match[1]}`
+      }
+    } else {
+      const match = topic.match(/ID (\d+) (.+)/)
+      if (match) {
+        return `(ID ${match[1]}) - ${match[2]}`
+      }
+    }
+    return topic // Return original string if no match
   }
 
   useEffect(() => {
@@ -48,16 +54,54 @@ const ParallelDay2 = () => {
         )
 
         const sheetData = response.data.values
-        const formattedData = sheetData.slice(1).map((row) => {
-          const formattedRow = {}
-          fields.forEach((field, index) => {
-            formattedRow[field.key] = row[index]
-          })
-          return formattedRow
-        })
+        let startIndex = -1
+        let endIndex = -1
+        const eventDate = '2024-07-25' 
 
-        setData(formattedData)
-        setFilteredData(formattedData)
+        for (let i = 0; i < sheetData.length; i++) {
+          const rowContent = sheetData[i].join(' ').trim();
+          if (rowContent.includes('SESSION NAME') && rowContent.includes('Lab-on-a-chip and Biosensors')) {
+            startIndex = i;
+          } else if (startIndex !== -1 && rowContent.includes('COFFEE BREAK')) {
+            endIndex = i;
+            break;
+          }
+        }
+
+        if (startIndex !== -1 && endIndex !== -1){
+          const relevantData = sheetData.slice(startIndex, endIndex)
+          const organizedData = []
+
+          for (let i = 1; i <= 5; i++) {
+            const sessionChairs = relevantData.filter(row => row[0] === 'SESSION CHAIR').map(row => row[i].split('\n'))
+            organizedData.push({
+              sessionName: relevantData[0][i],
+              room: relevantData[1][i],
+              sessionChairs: sessionChairs,
+              topics: sessionChairs.map(() => [])
+            })
+
+            let currentChairIndex = 0
+            for (let j = 3; j < relevantData.length; j++) {
+              if (relevantData[j][i]) {
+                if (relevantData[j][0] === 'SESSION CHAIR') {
+                  currentChairIndex++;
+                  continue;
+                }
+                const topic = processTopicString(relevantData[j][i])
+                organizedData[i-1].topics[currentChairIndex].push({
+                  time: relevantData[j][0],
+                  topic: topic,
+                  date: eventDate
+                })
+              }
+            }
+          }
+
+          setData(organizedData)
+          setFilteredData(organizedData)
+        }
+        
         setIsLoading(false)
       } catch (error) {
         console.error('Error fetching data:', error)
@@ -72,23 +116,23 @@ const ParallelDay2 = () => {
     setSearchTerm(e.target.value)
     if (e.target.value.trim() === '') {
       setFilteredData(data)
-      setCurrentPage(1)
     }
   }
 
-  const indexOfLastItem = currentPage * itemsPerPage
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem)
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber)
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage)
-
-  const getPaginationGroup = () => {
-    let start = Math.floor((currentPage - 1) / pageNumbersToShow) * pageNumbersToShow
-    return new Array(pageNumbersToShow)
-      .fill()
-      .map((_, idx) => start + idx + 1)
-      .filter((page) => page <= totalPages)
+  const handleSearch = () => {
+    if (searchTerm.trim() === '') {
+      setFilteredData(data)
+    } else {
+      const filtered = data.filter((item) =>
+        item.sessionName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.topics.some(topicGroup => 
+          topicGroup.some(topic => 
+            topic.topic.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        )
+      )
+      setFilteredData(filtered)
+    }
   }
 
   const highlightText = (text, highlight) => {
@@ -101,6 +145,24 @@ const ParallelDay2 = () => {
       .map((part, index) => (regex.test(part) ? <mark key={index}>{part}</mark> : part))
   }
 
+  const createGoogleCalendarLink = (date, time, session) => {
+    const [startTime, endTime] = time.split(' – ')
+    const [startHours, startMinutes] = startTime.split(':')
+    const [endHours, endMinutes] = endTime ? endTime.split(':') : [parseInt(startHours) + 1, startMinutes]
+    
+    const startDateTime = new Date(`${date}T${startHours}:${startMinutes}:00+07:00`)
+    const endDateTime = new Date(`${date}T${endHours}:${endMinutes}:00+07:00`)
+    
+    const event = {
+      title: session,
+      description: session,
+      start: startDateTime.toISOString(),
+      end: endDateTime.toISOString(),
+    }
+
+    return google(event)
+  }
+
   if (isLoading) {
     return (
       <div className={styles.spinner}>
@@ -110,73 +172,77 @@ const ParallelDay2 = () => {
   }
 
   return (
-    <>
+    <CRow>
       <CForm>
         <CRow>
-          <CCol>
+          <CCol xs={9}>
             <CFormInput
               style={{ marginBottom: '15px' }}
-              placeholder="Plenary session"
+              placeholder="Search session"
               value={searchTerm}
-            //   onChange={handleInputChange}
+              onChange={handleInputChange}
             />
           </CCol>
-          <CCol>
-            <CButton
-              color="info"
-              variant="outline"
-              style={{ marginLeft: '5px' }}
-            //   onClick={handleSearch}
-            >
+          <CCol xs={3}>
+            <CButton color="info" variant='outline' onClick={handleSearch} style={{ marginBottom: '15px' }}>
               Search
             </CButton>
           </CCol>
         </CRow>
       </CForm>
-      <CTable responsive>
-        <CTableBody>
-          {fields.map((field) => (
-            <CTableRow key={field.key}>
-              <CTableHeaderCell scope="row">{field.label}</CTableHeaderCell>
-              {/* <CTableDataCell>{highlightText(item[field.key], searchTerm)}</CTableDataCell> */}
-            </CTableRow>
-          ))}
-        </CTableBody>
-      </CTable>
-      {filteredData.length > itemsPerPage && (
-        <CPagination
-          aria-label="Page navigation example"
-          align="center"
-          className={styles.pagenum}
-        >
-          <CPaginationItem
-            aria-label="Previous"
-            onClick={() => paginate(Math.max(1, currentPage - 1))}
-            disabled={currentPage === 1}
-          >
-            <span aria-hidden="true">&laquo;</span>
-          </CPaginationItem>
-
-          {getPaginationGroup().map((item, index) => (
-            <CPaginationItem
-              key={index}
-              active={currentPage === item}
-              onClick={() => paginate(item)}
-            >
-              {item}
-            </CPaginationItem>
-          ))}
-
-          <CPaginationItem
-            aria-label="Next"
-            onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
-            disabled={currentPage === totalPages}
-          >
-            <span aria-hidden="true">&raquo;</span>
-          </CPaginationItem>
-        </CPagination>
-      )}
-    </>
+      {filteredData.map((column, index) => (
+        <CCard key={index} className="mb-4">
+          <CCardBody>
+            <CTable responsive small bordered>
+              <CTableBody>
+                <CTableRow>
+                  <CTableHeaderCell style={{fontWeight: 'bold'}}>Session Name</CTableHeaderCell>
+                  <CTableDataCell>{highlightText(column.sessionName, searchTerm)}</CTableDataCell>
+                </CTableRow>
+                <CTableRow>
+                  <CTableHeaderCell style={{fontWeight: 'bold'}}>Room</CTableHeaderCell>
+                  <CTableDataCell>{column.room}</CTableDataCell>
+                </CTableRow>
+              </CTableBody>
+            </CTable>
+            {column.sessionChairs.map((chairs, chairIndex) => (
+              <CTable key={chairIndex} responsive small bordered className="mt-3">
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell colSpan="3" style={{fontWeight: 'bold'}}>
+                      SESSION CHAIR - {chairs.join(', ')}
+                    </CTableHeaderCell>
+                  </CTableRow>
+                </CTableHead>
+                <CTableBody>
+                  {column.topics[chairIndex].map((item, itemIndex) => (
+                    <CTableRow key={itemIndex}>
+                      <CTableHeaderCell style={{fontWeight: 'bold'}}>{item.time}</CTableHeaderCell>
+                      <CTableDataCell>{highlightText(item.topic, searchTerm)}</CTableDataCell>
+                      <CTableDataCell>
+                        <CButton
+                          color="info"
+                          variant='outline'
+                          size='sm'
+                          onClick={() =>
+                            window.open(
+                              createGoogleCalendarLink(item.date, item.time, item.topic),
+                              '_blank',
+                            )
+                          }
+                        >
+                          Set Reminder
+                        </CButton>
+                      </CTableDataCell>
+                    </CTableRow>
+                  ))}
+                </CTableBody>
+              </CTable>
+            ))}
+          </CCardBody>
+        </CCard>
+      ))}
+    </CRow>
   )
 }
 

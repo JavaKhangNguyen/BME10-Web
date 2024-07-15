@@ -8,8 +8,7 @@ import {
   CRow,
   CToast,
   CToastBody,
-  CToastHeader,
-  CSpinner
+  CToastHeader
 } from '@coreui/react'
 
 import styles from '../assets/css/styles.module.css'

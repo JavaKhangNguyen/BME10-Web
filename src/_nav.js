@@ -1,6 +1,6 @@
 import React from 'react'
 import CIcon from '@coreui/icons-react'
-import { cilAudio, cilNotes, cilSend} from '@coreui/icons'
+import { cilAudio, cilNotes, cilSend, cilImage} from '@coreui/icons'
 import { CNavItem } from '@coreui/react'
 
 const _nav = [
@@ -21,6 +21,12 @@ const _nav = [
     name: 'Session Feedback',
     to: '/feedback',
     icon: <CIcon icon={cilSend} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Photos',
+    to: '/photos',
+    icon: <CIcon icon={cilImage} customClassName="nav-icon" />,
   },
 ]
 

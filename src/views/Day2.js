@@ -9,7 +9,7 @@ import {
 } from '@coreui/react'
 
 import styles from '../assets/css/styles.module.css'
-import ParallelDay2 from './sessions/ParallelDay2'
+import ParallelDay3 from './sessions/ParallelDay3'
 import PlenaryDay2 from './sessions/PlenaryDay2'
 
 const Day2 = () => {
@@ -18,15 +18,15 @@ const Day2 = () => {
       <CCardBody>
         <CAccordion>
           <CAccordionItem itemKey={1} className={styles.accorditem}>
-            <CAccordionHeader>General Schdule</CAccordionHeader>
+            <CAccordionHeader>General Schedule</CAccordionHeader>
             <CAccordionBody>
               <PlenaryDay2 />
             </CAccordionBody>
           </CAccordionItem>
           <CAccordionItem itemKey={2} className={styles.accorditem}>
-            <CAccordionHeader>Parallel Session II</CAccordionHeader>
+            <CAccordionHeader>Parallel Session III</CAccordionHeader>
             <CAccordionBody>
-              <ParallelDay2 />
+              <ParallelDay3 />
             </CAccordionBody>
           </CAccordionItem>
         </CAccordion>

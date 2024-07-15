@@ -10,6 +10,7 @@ import {
 
 import styles from '../assets/css/styles.module.css'
 import ParallelDay1 from './sessions/ParallelDay1'
+import ParallelDay2 from './sessions/ParallelDay2'
 import PlenaryDay1 from './sessions/PlenaryDay1'
 
 const Day1 = () => {
@@ -18,7 +19,7 @@ const Day1 = () => {
       <CCardBody>
         <CAccordion>
           <CAccordionItem itemKey={1} className={styles.accorditem}>
-            <CAccordionHeader>General Schdule</CAccordionHeader>
+            <CAccordionHeader>General Schedule</CAccordionHeader>
             <CAccordionBody>
               <PlenaryDay1 />
             </CAccordionBody>
@@ -27,6 +28,12 @@ const Day1 = () => {
             <CAccordionHeader>Parallel Session I</CAccordionHeader>
             <CAccordionBody>
               <ParallelDay1 />
+            </CAccordionBody>
+          </CAccordionItem>
+          <CAccordionItem itemKey={3} className={styles.accorditem}>
+            <CAccordionHeader>Parallel Session II</CAccordionHeader>
+            <CAccordionBody>
+              <ParallelDay2 />
             </CAccordionBody>
           </CAccordionItem>
         </CAccordion>
