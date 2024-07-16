@@ -35,6 +35,19 @@ const Abstract = () => {
     { key: 'Abstract', label: 'Abstract' },
   ]
 
+  const getDataCellStyle = (fieldKey) => {
+    switch (fieldKey) {
+      case 'Title':
+        return { fontWeight: 'bold' }
+      case 'Authors':
+        return { fontStyle: 'italic' }
+      case 'Abstract':
+        return { textAlign: 'justify' }
+      default:
+        return {}
+    }
+  }
+
   const GOOGLE_SHEET_PROPS = {
     spreadsheetId: '1njDrQL77uCcatspEjHWb0LPft5I--k_x38V3d2AKi7Q',
     apiKey: 'AIzaSyA58ewEtO-S235_GJRgEwo6k9UN0uY2cL0',
@@ -160,7 +173,7 @@ const Abstract = () => {
                     {fields.map((field) => (
                       <CTableRow key={field.key}>
                         <CTableHeaderCell scope="row">{field.label}</CTableHeaderCell>
-                        <CTableDataCell>
+                        <CTableDataCell style={getDataCellStyle(field.key)}>
                           {highlightText(item[field.key], searchTerm)}
                         </CTableDataCell>
                       </CTableRow>
