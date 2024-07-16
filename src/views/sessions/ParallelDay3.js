@@ -124,14 +124,29 @@ const ParallelDay3 = () => {
     if (searchTerm.trim() === '') {
       setFilteredData(data)
     } else {
-      const filtered = data.filter((item) =>
-        item.sessionName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.topics.some(topicGroup => 
-          topicGroup.some(topic => 
+      const filtered = data.map(item => {
+        const matchingChairs = item.sessionChairs.filter(chairs => 
+          chairs.some(chair => chair.toLowerCase().includes(searchTerm.toLowerCase()))
+        )
+        
+        const matchingTopics = item.topics.map(topicGroup => 
+          topicGroup.filter(topic => 
             topic.topic.toLowerCase().includes(searchTerm.toLowerCase())
           )
         )
-      )
+
+        if (item.sessionName.toLowerCase().includes(searchTerm.toLowerCase()) || 
+            matchingChairs.length > 0 || 
+            matchingTopics.some(group => group.length > 0)) {
+          return {
+            ...item,
+            sessionChairs: matchingChairs.length > 0 ? matchingChairs : item.sessionChairs,
+            topics: matchingTopics.some(group => group.length > 0) ? matchingTopics.filter(group => group.length > 0) : item.topics
+          }
+        }
+        return null
+      }).filter(Boolean)
+
       setFilteredData(filtered)
     }
   }
@@ -227,38 +242,40 @@ const ParallelDay3 = () => {
               </CTableBody>
             </CTable>
             {column.sessionChairs.map((chairs, chairIndex) => (
-              <CTable key={chairIndex} responsive small bordered className="mt-3">
-                <CTableHead>
-                  <CTableRow>
-                    <CTableHeaderCell colSpan="3" style={{fontWeight: 'bold'}}>
-                      SESSION CHAIR - {chairs.join(', ')}
-                    </CTableHeaderCell>
-                  </CTableRow>
-                </CTableHead>
-                <CTableBody>
-                  {column.topics[chairIndex].map((item, itemIndex) => (
-                    <CTableRow key={itemIndex} color={isSessionOngoing(item.date, item.time) ? 'success' : undefined}>
-                      <CTableHeaderCell style={{fontWeight: 'bold'}}>{item.time}</CTableHeaderCell>
-                      <CTableDataCell>{highlightText(item.topic, searchTerm)}</CTableDataCell>
-                      <CTableDataCell>
-                        <CButton
-                          color="info"
-                          variant='outline'
-                          size='sm'
-                          onClick={() =>
-                            window.open(
-                              createGoogleCalendarLink(item.date, item.time, item.topic),
-                              '_blank',
-                            )
-                          }
-                        >
-                          Set Reminder
-                        </CButton>
-                      </CTableDataCell>
+              column.topics[chairIndex] && column.topics[chairIndex].length > 0 && (
+                <CTable key={chairIndex} responsive small bordered className="mt-3">
+                  <CTableHead>
+                    <CTableRow>
+                      <CTableHeaderCell colSpan="3" style={{fontWeight: 'bold'}}>
+                        SESSION CHAIR - {highlightText(chairs.join(', '), searchTerm)}
+                      </CTableHeaderCell>
                     </CTableRow>
-                  ))}
-                </CTableBody>
-              </CTable>
+                  </CTableHead>
+                  <CTableBody>
+                    {column.topics[chairIndex].map((item, itemIndex) => (
+                      <CTableRow key={itemIndex} color={isSessionOngoing(item.date, item.time) ? 'success' : undefined}>
+                        <CTableHeaderCell style={{fontWeight: 'bold'}}>{item.time}</CTableHeaderCell>
+                        <CTableDataCell>{highlightText(item.topic, searchTerm)}</CTableDataCell>
+                        <CTableDataCell>
+                          <CButton
+                            color="info"
+                            variant='outline'
+                            size='sm'
+                            onClick={() =>
+                              window.open(
+                                createGoogleCalendarLink(item.date, item.time, item.topic),
+                                '_blank',
+                              )
+                            }
+                          >
+                            Set Reminder
+                          </CButton>
+                        </CTableDataCell>
+                      </CTableRow>
+                    ))}
+                  </CTableBody>
+                </CTable>
+              )
             ))}
           </CCardBody>
         </CCard>

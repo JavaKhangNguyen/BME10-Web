@@ -21,6 +21,8 @@ const AppHeader = () => {
   }, [])
 
   return (
+    <>
+    <CImage position="fixed" src={banner} className={styles.banner}/>
     <CHeader position="sticky" className={styles.headercont} ref={headerRef}>
       <CContainer fluid>
         <CHeaderToggler
@@ -29,9 +31,10 @@ const AppHeader = () => {
         >
           <CIcon icon={cilMenu} size="3xl" />
         </CHeaderToggler>
-        <CImage src={banner} className={styles.banner}/>
       </CContainer>
     </CHeader>
+    
+    </>
   )
 }
 
