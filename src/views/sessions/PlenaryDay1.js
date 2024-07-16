@@ -214,7 +214,7 @@ const PlenaryDay1 = () => {
   return (
     <>
       <CForm>
-        <CRow>
+        <CRow className="w-100">
           <CCol>
             <CFormInput
               style={{ marginBottom: '15px' }}

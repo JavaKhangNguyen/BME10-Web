@@ -195,7 +195,7 @@ const ParallelDay2 = () => {
   return (
     <CRow>
       <CForm>
-        <CRow>
+        <CRow className="w-100">
           <CCol xs={9}>
             <CFormInput
               style={{ marginBottom: '15px' }}

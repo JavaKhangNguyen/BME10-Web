@@ -117,9 +117,9 @@ const Abstract = () => {
       return text
     }
     const regex = new RegExp(`(${highlight})`, 'gi')
-    return text.split(regex).map((part, index) => 
-      regex.test(part) ? <mark key={index}>{part}</mark> : part
-    )
+    return text
+      .split(regex)
+      .map((part, index) => (regex.test(part) ? <mark key={index}>{part}</mark> : part))
   }
 
   if (isLoading) {
@@ -134,8 +134,8 @@ const Abstract = () => {
     <>
       <CRow className={styles.cardbody}>Abstract Book</CRow>
       <CForm>
-        <CRow>
-          <CCol>
+        <CRow className="w-100">
+          <CCol xs={12} sm={10}>
             <CFormInput
               style={{ marginBottom: '15px' }}
               placeholder="Submission ID, Authors or Title"
@@ -143,8 +143,8 @@ const Abstract = () => {
               onChange={handleInputChange}
             />
           </CCol>
-          <CCol>
-            <CButton color="info" variant="outline" style={{ marginLeft: '5px' }} onClick={handleSearch}>
+          <CCol xs={12} sm={2}>
+            <CButton color="info" variant="outline" onClick={handleSearch}>
               Search
             </CButton>
           </CCol>
@@ -153,14 +153,16 @@ const Abstract = () => {
       <CRow>
         {filteredData.length > 0 ? (
           currentItems.map((item, index) => (
-            <CCard key={index} style={{marginBottom: '10px'}} className={'border-info'}>
+            <CCard key={index} style={{ marginBottom: '10px' }} className={'border-info'}>
               <CCardBody>
                 <CTable responsive>
                   <CTableBody>
                     {fields.map((field) => (
                       <CTableRow key={field.key}>
                         <CTableHeaderCell scope="row">{field.label}</CTableHeaderCell>
-                        <CTableDataCell>{highlightText(item[field.key], searchTerm)}</CTableDataCell>
+                        <CTableDataCell>
+                          {highlightText(item[field.key], searchTerm)}
+                        </CTableDataCell>
                       </CTableRow>
                     ))}
                   </CTableBody>
@@ -174,34 +176,38 @@ const Abstract = () => {
           </CCard>
         )}
         {filteredData.length > itemsPerPage && (
-        <CPagination aria-label="Page navigation example" align="center" className={styles.pagenum}>
-          <CPaginationItem
-            aria-label="Previous"
-            onClick={() => paginate(Math.max(1, currentPage - 1))}
-            disabled={currentPage === 1}
+          <CPagination
+            aria-label="Page navigation example"
+            align="center"
+            className={styles.pagenum}
           >
-            <span aria-hidden="true">&laquo;</span>
-          </CPaginationItem>
-
-          {getPaginationGroup().map((item, index) => (
             <CPaginationItem
-              key={index}
-              active={currentPage === item}
-              onClick={() => paginate(item)}
+              aria-label="Previous"
+              onClick={() => paginate(Math.max(1, currentPage - 1))}
+              disabled={currentPage === 1}
             >
-              {item}
+              <span aria-hidden="true">&laquo;</span>
             </CPaginationItem>
-          ))}
 
-          <CPaginationItem
-            aria-label="Next"
-            onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
-            disabled={currentPage === totalPages}
-          >
-            <span aria-hidden="true">&raquo;</span>
-          </CPaginationItem>
-        </CPagination>
-      )}
+            {getPaginationGroup().map((item, index) => (
+              <CPaginationItem
+                key={index}
+                active={currentPage === item}
+                onClick={() => paginate(item)}
+              >
+                {item}
+              </CPaginationItem>
+            ))}
+
+            <CPaginationItem
+              aria-label="Next"
+              onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
+              disabled={currentPage === totalPages}
+            >
+              <span aria-hidden="true">&raquo;</span>
+            </CPaginationItem>
+          </CPagination>
+        )}
       </CRow>
     </>
   )
