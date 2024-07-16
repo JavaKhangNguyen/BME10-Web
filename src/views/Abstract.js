@@ -131,19 +131,19 @@ const Abstract = () => {
   }
 
   return (
-    <CRow>
+    <CCol className={styles.abstract}>
       <CRow className={styles.cardbody}>Abstract Book</CRow>
       <CForm>
         <CRow className="w-100">
-          <CCol xs={12} sm={10}>
+          <CCol xs={8}>
             <CFormInput
               style={{ marginBottom: '15px' }}
-              placeholder="Submission ID, Authors or Title"
+              placeholder="ID, Authors or Title"
               value={searchTerm}
               onChange={handleInputChange}
             />
           </CCol>
-          <CCol xs={12} sm={2}>
+          <CCol>
             <CButton color="info" variant="outline" onClick={handleSearch}>
               Search
             </CButton>
@@ -209,7 +209,7 @@ const Abstract = () => {
           </CPagination>
         )}
       </CRow>
-    </CRow>
+    </CCol>
   )
 }
 
