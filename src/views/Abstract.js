@@ -131,7 +131,7 @@ const Abstract = () => {
   }
 
   return (
-    <>
+    <CRow>
       <CRow className={styles.cardbody}>Abstract Book</CRow>
       <CForm>
         <CRow className="w-100">
@@ -209,7 +209,7 @@ const Abstract = () => {
           </CPagination>
         )}
       </CRow>
-    </>
+    </CRow>
   )
 }
 
