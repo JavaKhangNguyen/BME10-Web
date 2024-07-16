@@ -192,7 +192,7 @@ const PlenaryDay3 = () => {
     <>
       <CForm>
         <CRow className="w-100">
-          <CCol>
+          <CCol xs={12} sm={10}>
             <CFormInput
               style={{ marginBottom: '15px' }}
               placeholder="Search session"
@@ -200,7 +200,7 @@ const PlenaryDay3 = () => {
               onChange={handleInputChange}
             />
           </CCol>
-          <CCol>
+          <CCol xs={12} sm={2}>
             <CButton color="info" variant="outline" style={{ marginLeft: '5px' }} onClick={handleSearch}>
               Search
             </CButton>
@@ -218,7 +218,7 @@ const PlenaryDay3 = () => {
           </CTableHead>
           <CTableBody>
             {currentItems.map((item, index) => (
-              <CTableRow key={index}>
+              <CTableRow key={index} color={isSessionOngoing(item.Date, item.Time) ? 'success' : undefined}>
                 {fields.map((field) => (
                   <CTableDataCell key={field.key}>
                     {field.key === 'Session'

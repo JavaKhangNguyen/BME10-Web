@@ -204,7 +204,7 @@ const PlenaryDay2 = () => {
     <>
       <CForm>
         <CRow className="w-100">
-          <CCol>
+          <CCol xs={12} sm={10}>
             <CFormInput
               style={{ marginBottom: '15px' }}
               placeholder="Search session"
@@ -212,7 +212,7 @@ const PlenaryDay2 = () => {
               onChange={handleInputChange}
             />
           </CCol>
-          <CCol>
+          <CCol xs={12} sm={2}>
             <CButton color="info" variant="outline" style={{ marginLeft: '5px' }} onClick={handleSearch}>
               Search
             </CButton>

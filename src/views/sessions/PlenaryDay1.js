@@ -212,10 +212,10 @@ const PlenaryDay1 = () => {
   }
 
   return (
-    <>
+    <CRow>
       <CForm>
         <CRow className="w-100">
-          <CCol>
+          <CCol xs={12} sm={10}>
             <CFormInput
               style={{ marginBottom: '15px' }}
               placeholder="Search session"
@@ -223,7 +223,7 @@ const PlenaryDay1 = () => {
               onChange={handleInputChange}
             />
           </CCol>
-          <CCol>
+          <CCol xs={12} sm={2}>
             <CButton
               color="info"
               variant="outline"
@@ -307,7 +307,7 @@ const PlenaryDay1 = () => {
           </CPaginationItem>
         </CPagination>
       )}
-    </>
+    </CRow>
   )
 }
 

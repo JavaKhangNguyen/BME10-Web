@@ -196,7 +196,7 @@ const ParallelDay3 = () => {
     <CRow>
       <CForm>
         <CRow className="w-100">
-          <CCol xs={9}>
+          <CCol xs={12} sm={10}>
             <CFormInput
               style={{ marginBottom: '15px' }}
               placeholder="Search session"
@@ -204,7 +204,7 @@ const ParallelDay3 = () => {
               onChange={handleInputChange}
             />
           </CCol>
-          <CCol xs={3}>
+          <CCol xs={12} sm={2}>
             <CButton color="info" variant='outline' onClick={handleSearch} style={{ marginBottom: '15px' }}>
               Search
             </CButton>
