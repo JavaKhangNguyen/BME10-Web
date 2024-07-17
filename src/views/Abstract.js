@@ -41,8 +41,6 @@ const Abstract = () => {
         return { fontWeight: 'bold' }
       case 'Authors':
         return { fontStyle: 'italic' }
-      case 'Abstract':
-        return { textAlign: 'justify' }
       default:
         return {}
     }

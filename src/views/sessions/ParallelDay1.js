@@ -33,15 +33,33 @@ const ParallelDay1 = () => {
   }
 
   const processTopicString = (topic) => {
-    if (topic.startsWith('# Invited Speaker')) {
-      const match = topic.match(/# Invited Speaker (.+?) \((.+?)\) (.+)/)
-      if (match) {
-        return `(${match[2]}) - ${match[3]} - ${match[1]}`
+    if (topic.startsWith('# Invited Speaker ')) {
+      const parts = topic.split('\n');
+      if (parts.length === 2) {
+        const info = parts[1].trim();
+        const regex = /(.*?)\s*\((ID \d+)\)\s*(.*)/;
+        const matches = info.match(regex);
+  
+        if (matches && matches.length === 4) {
+          const professorDetails = matches[1].trim();
+          const id = matches[2].trim();
+          const title = matches[3].trim();
+          return `${title} (${id}) - ${professorDetails}`;
+        }
       }
     } else {
-      const match = topic.match(/ID (\d+) (.+)/)
-      if (match) {
-        return `(ID ${match[1]}) - ${match[2]}`
+      const lines = topic.split('\n');
+      if (lines.length === 2 && lines[0].startsWith('ID ')) {
+        const id = lines[0].trim();
+        const title = lines[1].trim();
+        return `${title} (${id})`
+      } else {
+        const idIndex = topic.lastIndexOf("(ID");
+        if (idIndex !== -1) {
+          let idPart = topic.substring(idIndex).trim();
+          let modifiedString = topic.substring(0, idIndex).trim();
+          return `${modifiedString} - ${idPart}`
+        }
       }
     }
     return topic // Return original string if no match
@@ -111,7 +129,7 @@ const ParallelDay1 = () => {
 
     fetchData()
   }, [])
-
+  console.log(filteredData)
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value)
     if (e.target.value.trim() === '') {
@@ -140,7 +158,7 @@ const ParallelDay1 = () => {
           return {
             ...item,
             sessionChairs: matchingChairs.length > 0 ? matchingChairs : item.sessionChairs,
-            topics: matchingTopics.some(group => group.length > 0) ? matchingTopics.filter(group => group.length > 0) : item.topics
+            topics: matchingTopics
           }
         }
         return null

@@ -28,7 +28,7 @@ const PlenaryDay1 = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [currentTime, setCurrentTime] = useState(new Date())
-  const itemsPerPage = 5
+  const itemsPerPage = 20
   const pageNumbersToShow = 5
 
   const fields = [
