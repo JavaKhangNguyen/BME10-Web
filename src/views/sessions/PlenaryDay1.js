@@ -236,7 +236,7 @@ const PlenaryDay1 = () => {
         </CRow>
       </CForm>
       {filteredData.length > 0 ? (
-        <CTable responsive>
+        <CTable responsive align='middle'>
           <CTableHead>
             <CTableRow>
               {fields.map((field) => (

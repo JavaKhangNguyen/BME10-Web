@@ -59,13 +59,13 @@ const LiveSession = () => {
       <CTabs activeItemKey={activeKey}>
             <CTabList variant="underline-border">
               <CTab aria-controls="home-tab-pane" itemKey={1} className={styles.tablabel}>
-                Day 1 - 25/07/2024
+                Day 1 - 25/07
               </CTab>
               <CTab aria-controls="profile-tab-pane" itemKey={2} className={styles.tablabel}>
-                Day 2 - 26/07/2024
+                Day 2 - 26/07
               </CTab>
               <CTab aria-controls="profile-tab-pane" itemKey={3} className={styles.tablabel}>
-                Day 3 - 27/07/2024
+                Day 3 - 27/07
               </CTab>
             </CTabList>
             <CTabContent>

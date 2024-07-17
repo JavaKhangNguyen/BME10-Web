@@ -129,7 +129,7 @@ const ParallelDay1 = () => {
 
     fetchData()
   }, [])
-  console.log(filteredData)
+
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value)
     if (e.target.value.trim() === '') {
@@ -246,7 +246,7 @@ const ParallelDay1 = () => {
       {filteredData.map((column, index) => (
         <CCard key={index} className="mb-4">
           <CCardBody>
-            <CTable responsive small bordered>
+            <CTable responsive bordered align='middle'>
               <CTableBody>
                 <CTableRow>
                   <CTableHeaderCell style={{fontWeight: 'bold'}}>Session Name</CTableHeaderCell>
@@ -260,7 +260,7 @@ const ParallelDay1 = () => {
             </CTable>
             {column.sessionChairs.map((chairs, chairIndex) => (
               column.topics[chairIndex] && column.topics[chairIndex].length > 0 && (
-                <CTable key={chairIndex} responsive small bordered className="mt-3">
+                <CTable key={chairIndex} responsive align='middle' bordered className="mt-3">
                   <CTableHead>
                     <CTableRow>
                       <CTableHeaderCell colSpan="3" style={{fontWeight: 'bold'}}>

@@ -165,7 +165,7 @@ const Abstract = () => {
           currentItems.map((item, index) => (
             <CCard key={index} style={{ marginBottom: '10px' }} className={'border-info'}>
               <CCardBody>
-                <CTable responsive>
+                <CTable responsive align='middle'>
                   <CTableBody>
                     <CTableRow>
                       <CTableDataCell style={{ fontWeight: 'bold' }}>

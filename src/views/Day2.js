@@ -11,6 +11,8 @@ import {
 import styles from '../assets/css/styles.module.css'
 import ParallelDay3 from './sessions/ParallelDay3'
 import PlenaryDay2 from './sessions/PlenaryDay2'
+import PosterSession1 from './sessions/PosterSession1'
+import PosterSession2 from './sessions/PosterSession2'
 
 const Day2 = () => {
   return (
@@ -27,6 +29,18 @@ const Day2 = () => {
             <CAccordionHeader>Parallel Session III</CAccordionHeader>
             <CAccordionBody>
               <ParallelDay3 />
+            </CAccordionBody>
+          </CAccordionItem>
+          <CAccordionItem itemKey={3} className={styles.accorditem}>
+            <CAccordionHeader>Poster Session I</CAccordionHeader>
+            <CAccordionBody>
+              <PosterSession1 />
+            </CAccordionBody>
+          </CAccordionItem>
+          <CAccordionItem itemKey={4} className={styles.accorditem}>
+            <CAccordionHeader>Poster Session II</CAccordionHeader>
+            <CAccordionBody>
+              <PosterSession2 />
             </CAccordionBody>
           </CAccordionItem>
         </CAccordion>
