@@ -75,6 +75,11 @@ body {
   width: 70%;
 }
 
+.footerlogo{
+  width: 7%;
+  margin-right: 5px;
+}
+
 .searchbox{
   margin-top: 10px;
   margin-bottom: 10px;
