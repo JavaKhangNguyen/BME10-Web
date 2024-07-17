@@ -39,7 +39,7 @@ const PlenaryDay2 = () => {
   ]
 
   const GOOGLE_SHEET_PROPS = {
-    spreadsheetId: '1EXn7R4dhv-qqD0uE9U6rVsL3WinxlV77d-vFUfAzoV8',
+    spreadsheetId: '1HYVlaBpzW0dSE7eHJhIRr_CxLuG_htfM3yBMCKOJRWc',
     apiKey: 'AIzaSyA58ewEtO-S235_GJRgEwo6k9UN0uY2cL0',
     sheetName: 'Oral arrangement',
   }
