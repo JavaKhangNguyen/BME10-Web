@@ -33,7 +33,6 @@ const AppHeader = () => {
         </CHeaderToggler>
       </CContainer>
     </CHeader>
-    
     </>
   )
 }
