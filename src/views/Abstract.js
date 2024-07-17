@@ -10,7 +10,6 @@ import {
   CSpinner,
   CTable,
   CTableRow,
-  CTableHeaderCell,
   CTableDataCell,
   CTableBody,
   CPagination,
@@ -170,7 +169,6 @@ const Abstract = () => {
                   <CTableBody>
                     {fields.map((field) => (
                       <CTableRow key={field.key}>
-                        <CTableHeaderCell scope="row">{field.label}</CTableHeaderCell>
                         <CTableDataCell style={getDataCellStyle(field.key)}>
                           {highlightText(item[field.key], searchTerm)}
                         </CTableDataCell>
