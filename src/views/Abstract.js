@@ -167,13 +167,21 @@ const Abstract = () => {
               <CCardBody>
                 <CTable responsive>
                   <CTableBody>
-                    {fields.map((field) => (
-                      <CTableRow key={field.key}>
-                        <CTableDataCell style={getDataCellStyle(field.key)}>
-                          {highlightText(item[field.key], searchTerm)}
-                        </CTableDataCell>
-                      </CTableRow>
-                    ))}
+                    <CTableRow>
+                      <CTableDataCell style={{ fontWeight: 'bold' }}>
+                        {highlightText(`#${item['Submission ID']}  ${item['Title']}`, searchTerm)}
+                      </CTableDataCell>
+                    </CTableRow>
+                    <CTableRow>
+                      <CTableDataCell style={{ fontStyle: 'italic' }}>
+                        {highlightText(item['Authors'], searchTerm)}
+                      </CTableDataCell>
+                    </CTableRow>
+                    <CTableRow>
+                      <CTableDataCell>
+                        {highlightText(item['Abstract'], searchTerm)}
+                      </CTableDataCell>
+                    </CTableRow>
                   </CTableBody>
                 </CTable>
               </CCardBody>
