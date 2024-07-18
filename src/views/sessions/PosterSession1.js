@@ -150,6 +150,12 @@ const PosterSession1 = () => {
               placeholder="Search paper ID or title"
               value={searchTerm}
               onChange={handleInputChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter'){
+                  e.preventDefault()
+                  handleSearch()
+                }
+              }}
             />
           </CCol>
           <CCol>

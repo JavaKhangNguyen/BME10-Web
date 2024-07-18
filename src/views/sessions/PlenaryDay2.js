@@ -210,6 +210,12 @@ const PlenaryDay2 = () => {
               placeholder="Search session"
               value={searchTerm}
               onChange={handleInputChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter'){
+                  e.preventDefault()
+                  handleSearch()
+                }
+              }}
             />
           </CCol>
           <CCol>

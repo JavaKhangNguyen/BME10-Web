@@ -234,6 +234,12 @@ const ParallelDay1 = () => {
               placeholder="Search session, chair, or topic"
               value={searchTerm}
               onChange={handleInputChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter'){
+                  e.preventDefault()
+                  handleSearch()
+                }
+              }}
             />
           </CCol>
           <CCol>

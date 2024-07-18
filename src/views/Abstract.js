@@ -34,17 +34,6 @@ const Abstract = () => {
     { key: 'Abstract', label: 'Abstract' },
   ]
 
-  const getDataCellStyle = (fieldKey) => {
-    switch (fieldKey) {
-      case 'Title':
-        return { fontWeight: 'bold' }
-      case 'Authors':
-        return { fontStyle: 'italic' }
-      default:
-        return {}
-    }
-  }
-
   const GOOGLE_SHEET_PROPS = {
     spreadsheetId: '1njDrQL77uCcatspEjHWb0LPft5I--k_x38V3d2AKi7Q',
     apiKey: 'AIzaSyA58ewEtO-S235_GJRgEwo6k9UN0uY2cL0',
@@ -148,9 +137,16 @@ const Abstract = () => {
           <CCol xs={8}>
             <CFormInput
               style={{ marginBottom: '15px' }}
+              type="text"
               placeholder="ID, Authors or Title"
               value={searchTerm}
               onChange={handleInputChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter'){
+                  e.preventDefault()
+                  handleSearch()
+                }
+              }}
             />
           </CCol>
           <CCol>
@@ -165,7 +161,7 @@ const Abstract = () => {
           currentItems.map((item, index) => (
             <CCard key={index} style={{ marginBottom: '10px' }} className={'border-info'}>
               <CCardBody>
-                <CTable responsive align='middle'>
+                <CTable responsive align="middle">
                   <CTableBody>
                     <CTableRow>
                       <CTableDataCell style={{ fontWeight: 'bold' }}>
@@ -178,9 +174,7 @@ const Abstract = () => {
                       </CTableDataCell>
                     </CTableRow>
                     <CTableRow>
-                      <CTableDataCell>
-                        {highlightText(item['Abstract'], searchTerm)}
-                      </CTableDataCell>
+                      <CTableDataCell>{highlightText(item['Abstract'], searchTerm)}</CTableDataCell>
                     </CTableRow>
                   </CTableBody>
                 </CTable>
