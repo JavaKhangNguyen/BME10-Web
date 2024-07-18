@@ -89,23 +89,32 @@ const PosterSession2 = () => {
   }, [])
 
   const handleInputChange = (e) => {
-    const value = e.target.value
-    setSearchTerm(value)
-    filterData(value)
+    setSearchTerm(e.target.value)
+    if (e.target.value.trim() === '') {
+      setFilteredData(data)
+    }
   }
 
-  const filterData = (term) => {
-    if (term.trim() === '') {
+  const handleSearch = () => {
+    if (searchTerm.trim() === '') {
       setFilteredData(data)
     } else {
-      const filtered = data.map(session => ({
-        ...session,
-        papers: session.papers.filter(paper =>
-          paper.paperTitle.toLowerCase().includes(term.toLowerCase()) ||
-          paper.submissionId.toLowerCase().includes(term.toLowerCase())
+      const filtered = data.map(session => {
+        const matchingPapers = session.papers.filter(paper => 
+          (paper.posterId && paper.posterId.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (paper.submissionId && paper.submissionId.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (paper.paperTitle && paper.paperTitle.toLowerCase().includes(searchTerm.toLowerCase()))
         )
-      })).filter(session => session.papers.length > 0)
-
+  
+        if (session.sessionName.toLowerCase().includes(searchTerm.toLowerCase()) || matchingPapers.length > 0) {
+          return {
+            ...session,
+            papers: matchingPapers
+          }
+        }
+        return null
+      }).filter(Boolean)
+  
       setFilteredData(filtered)
     }
   }
@@ -141,7 +150,7 @@ const PosterSession2 = () => {
             />
           </CCol>
           <CCol>
-            <CButton color="info" variant='outline' onClick={() => filterData(searchTerm)} style={{ marginBottom: '15px' }}>
+            <CButton color="info" variant='outline' onClick={handleSearch} style={{ marginBottom: '15px' }}>
               Search
             </CButton>
           </CCol>
