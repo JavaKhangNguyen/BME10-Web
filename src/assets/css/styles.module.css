@@ -14,7 +14,7 @@ body {
 }
 
 .cardheader{
-  --cui-card-cap-bg: #ffffff;
+  --cui-card-cap-bg: var(--cui-body-bg);
   font-size: large;
   font-weight: bold;
   font-family: "Lato", sans-serif;
@@ -29,7 +29,7 @@ body {
 
 .headercont{
   padding: 0;
-  --cui-header-border-color: #ffffff;
+  --cui-header-border-color: transparent;
   justify-content: center;
 }
 
