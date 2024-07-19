@@ -144,7 +144,7 @@ const PosterSession2 = () => {
           <CCol xs={7}>
             <CFormInput
               style={{ marginBottom: '15px' }}
-              placeholder="Search paper ID or title"
+              placeholder="Search paper"
               value={searchTerm}
               onChange={handleInputChange}
               onKeyDown={(e) => {
@@ -163,9 +163,8 @@ const PosterSession2 = () => {
         </CRow>
       </CForm>
       {filteredData.map((session, index) => (
-        <CCard key={index} className="mb-4">
+        <CCard key={index} className={'border-info'} style={{marginBottom: '15px'}}>
           <CCardHeader className={styles.cardheader}>{session.sessionName}</CCardHeader>
-          <CCardBody className={'border-info'}>
             <CTable responsive bordered align='middle'>
               <CTableHead>
                 <CTableRow>
@@ -184,7 +183,6 @@ const PosterSession2 = () => {
                 ))}
               </CTableBody>
             </CTable>
-          </CCardBody>
         </CCard>
       ))}
     </CRow>

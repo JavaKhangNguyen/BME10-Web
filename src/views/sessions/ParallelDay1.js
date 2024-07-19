@@ -250,8 +250,8 @@ const ParallelDay1 = () => {
         </CRow>
       </CForm>
       {filteredData.map((column, index) => (
-        <CCard key={index} className="mb-4">
-          <CCardBody>
+        <CCard key={index} className={'border-info'} style={{marginBottom: '15px'}}>
+          <CCardBody className={styles.accordbody}>
             <CTable responsive bordered align='middle'>
               <CTableBody>
                 <CTableRow>

@@ -13,8 +13,8 @@ import PlenaryDay3 from './sessions/PlenaryDay3'
 
 const Day3 = () => {
   return (
-    <CCard className={'border-info'}>
-      <CCardBody>
+    <CCard style={{border: 'none'}}>
+      <CCardBody className={styles.accordbody}>
         <CAccordion alwaysOpen activeItemKey={1}>
           <CAccordionItem itemKey={1} className={styles.accorditem}>
             <CAccordionHeader>General Schedule</CAccordionHeader>

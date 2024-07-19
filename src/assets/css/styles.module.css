@@ -20,6 +20,13 @@ body {
   font-family: "Lato", sans-serif;
 }
 
+.cardbody{
+  margin-left: 5px; 
+  margin-bottom: 10px;
+  font-weight: bold;
+  font-size: x-large;
+}
+
 .headercont{
   padding: 0;
   --cui-header-border-color: #ffffff;
@@ -41,16 +48,9 @@ body {
 }
 
 .container{
-  margin-bottom: 1rem;
+  margin-bottom: 0.25rem;
   font-size: medium;
   font-family: "Lato", sans-serif;
-}
-
-.cardbody{
-  margin-left: 5px; 
-  margin-bottom: 10px;
-  font-weight: bold;
-  font-size: x-large;
 }
 
 .spinner{
@@ -72,7 +72,7 @@ body {
 }
 
 .sidelogo{
-  width: 70%;
+  width: 60%;
 }
 
 .footerlogo{
@@ -103,6 +103,11 @@ body {
   --cui-accordion-active-color: #ffffff;
   --cui-accordion-active-bg: var(--cui-info);
   --cui-accordion-btn-focus-box-shadow: 0 0 0 0.25rem #ffffff;
+  border: none
+}
+
+.accordbody{
+  --cui-card-spacer-x: 0;
 }
 
 .hreflink{

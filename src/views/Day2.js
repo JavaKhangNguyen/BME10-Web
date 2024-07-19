@@ -16,8 +16,8 @@ import PosterSession2 from './sessions/PosterSession2'
 
 const Day2 = () => {
   return (
-    <CCard className={'border-info'}>
-      <CCardBody>
+    <CCard style={{border: 'none'}}>
+      <CCardBody className={styles.accordbody}>
         <CAccordion>
           <CAccordionItem itemKey={1} className={styles.accorditem}>
             <CAccordionHeader>General Schedule</CAccordionHeader>

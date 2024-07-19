@@ -164,17 +164,17 @@ const Abstract = () => {
                 <CTable responsive align="middle">
                   <CTableBody>
                     <CTableRow>
-                      <CTableDataCell style={{ fontWeight: 'bold' }}>
+                      <CTableDataCell style={{ fontWeight: 'bold', fontSize: '20px' }}>
                         {highlightText(`#${item['Submission ID']}  ${item['Title']}`, searchTerm)}
                       </CTableDataCell>
                     </CTableRow>
                     <CTableRow>
-                      <CTableDataCell style={{ fontStyle: 'italic' }}>
+                      <CTableDataCell style={{ fontStyle: 'italic', fontSize: '14px' }}>
                         {highlightText(item['Authors'], searchTerm)}
                       </CTableDataCell>
                     </CTableRow>
                     <CTableRow>
-                      <CTableDataCell>{highlightText(item['Abstract'], searchTerm)}</CTableDataCell>
+                      <CTableDataCell style={{ textAlign: 'justify' }}>{highlightText(item['Abstract'], searchTerm)}</CTableDataCell>
                     </CTableRow>
                   </CTableBody>
                 </CTable>
