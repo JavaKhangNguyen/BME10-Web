@@ -21,13 +21,7 @@ const _nav = [
     name: 'Session Feedback',
     to: '/feedback',
     icon: <CIcon icon={cilSend} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Photos',
-    to: '/photos',
-    icon: <CIcon icon={cilImage} customClassName="nav-icon" />,
-  },
+  }
 ]
 
 export default _nav
