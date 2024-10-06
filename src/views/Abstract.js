@@ -36,7 +36,7 @@ const Abstract = () => {
 
   const GOOGLE_SHEET_PROPS = {
     spreadsheetId: '1njDrQL77uCcatspEjHWb0LPft5I--k_x38V3d2AKi7Q',
-    apiKey: 'AIzaSyA58ewEtO-S235_GJRgEwo6k9UN0uY2cL0',
+    apiKey: '[API_KEY_HERE]',
     sheetName: 'Submissions',
   }
 
